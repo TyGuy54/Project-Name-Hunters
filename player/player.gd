@@ -16,8 +16,25 @@ var stamina = 50
 var health = 50
 
 var last_move_dir = Vector2.LEFT
+var current_gatherable: Node = null
 
+@onready var hit_box = $hit_box
 @export var animation: AnimatedSprite2D
+ 
+func _ready():
+	hit_box.area_entered.connect(_on_hitbox_area_entered)
+	hit_box.area_exited.connect(_on_hitbox_area_exited)
+
+
+func _on_hitbox_area_entered(area):
+	if area.is_in_group("gatherable"):
+		current_gatherable = area
+
+
+func _on_hitbox_area_exited(area):
+	if area == current_gatherable:
+		current_gatherable = null
+
 
 func play_idle_animation() -> void:
 	var dir = last_move_dir
@@ -30,6 +47,7 @@ func play_idle_animation() -> void:
 		animation.flip_h = dir.x < 0
 		animation.play("idle_side")
 
+
 func play_movement_animation(dir: Vector2) -> void:
 	if dir.y < 0:
 		animation.play("walk_up")
@@ -38,7 +56,6 @@ func play_movement_animation(dir: Vector2) -> void:
 	elif dir.x != 0:
 		animation.flip_h = dir.x < 0
 		animation.play("walk")
-
 
 #func handle_run():
 	#if Input.is_action_pressed('run'):

@@ -1,10 +1,11 @@
-[gd_scene load_steps=29 format=3 uid="uid://h7cm6aqvawjp"]
+[gd_scene load_steps=31 format=3 uid="uid://h7cm6aqvawjp"]
 
 [ext_resource type="Texture2D" uid="uid://dogy7v8e2kyvq" path="res://assets/prototype/Snoblin_Prototype_Character/Assets/Prototype_Character/Prototype_Character.png" id="1_oul6g"]
 [ext_resource type="Script" uid="uid://kcbf6aqdwcob" path="res://player/player.gd" id="1_rkbax"]
 [ext_resource type="Script" uid="uid://dk7iidmx78gi4" path="res://state/state_manager.gd" id="3_qjkh3"]
 [ext_resource type="Script" uid="uid://b20pum3g1ss68" path="res://player/player_states/player_move_state.gd" id="4_g6k8r"]
 [ext_resource type="Script" uid="uid://bg5libqbocv1p" path="res://player/player_states/player_idle_state.gd" id="5_boad6"]
+[ext_resource type="Script" uid="uid://dgkrd7xidl1u1" path="res://player/player_states/player_gather_state.gd" id="6_g6k8r"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wodsf"]
 atlas = ExtResource("1_oul6g")
@@ -205,7 +206,11 @@ animations = [{
 radius = 1.0
 height = 12.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g6k8r"]
+size = Vector2(9, 12)
+
 [node name="player" type="CharacterBody2D" node_paths=PackedStringArray("animation")]
+y_sort_enabled = true
 script = ExtResource("1_rkbax")
 animation = NodePath("AnimatedSprite2D")
 metadata/_edit_group_ = true
@@ -218,6 +223,13 @@ animation = &"idle"
 position = Vector2(0, 6)
 rotation = -1.5708
 shape = SubResource("CapsuleShape2D_b26j0")
+
+[node name="hit_box" type="Area2D" parent="." groups=["player_hitbox"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hit_box"]
+modulate = Color(1, 0.259015, 0.317412, 1)
+position = Vector2(-0.5, -1)
+shape = SubResource("RectangleShape2D_g6k8r")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
@@ -233,3 +245,9 @@ sprite = NodePath("../../AnimatedSprite2D")
 [node name="idle" type="Node" parent="state_machine" node_paths=PackedStringArray("entitiy")]
 script = ExtResource("5_boad6")
 entitiy = NodePath("../..")
+
+[node name="gather" type="Node" parent="state_machine" node_paths=PackedStringArray("entity")]
+script = ExtResource("6_g6k8r")
+entity = NodePath("../..")
+
+[connection signal="area_entered" from="hit_box" to="state_machine/gather" method="_on_hit_box_area_entered"]

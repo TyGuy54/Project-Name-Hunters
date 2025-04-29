@@ -23,4 +23,4 @@ func physics_update(delta: float) -> void:
 	entitiy.move_and_slide()
 
 	if entitiy.velocity.length() == 0:
-		state_tranition.emit(self, "idle")
+		state_transition.emit(self, "idle")

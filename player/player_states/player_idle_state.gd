@@ -12,7 +12,8 @@ func physics_update(delta) -> void:
 	
 	if direction.length() != 0:
 		print("Idle -> Move")
-		state_tranition.emit(self, 'move')
+		state_transition.emit(self, 'move')
 		
-	#if Input.is_action_just_pressed('attack'):
-		#pass
+	if Input.is_action_just_pressed("gather") and entitiy.current_gatherable:
+		print('idle -> gathering')
+		state_transition.emit(self, "gather")
